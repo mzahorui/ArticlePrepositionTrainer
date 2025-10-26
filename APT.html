@@ -50,7 +50,7 @@
 		<div id="Control Pannel">
 					<button id="resetBtn">Reset</button>
 		</div>
-			<div id="outputText"></div>
+		<div id="outputText">
 		</div>
 	</div>
 
@@ -126,14 +126,10 @@
 				buttons.push(btn);
 			});
 
-			const container = document.getElementById("outputText");
-			buttons.forEach(btn => container.appendChild(btn));
+			buttons.forEach(btn => outputText.appendChild(btn));
 			outputArea.style.display = 'block';
 
 			inputArea.style.display = 'none';
-			<!-- inputText.style.display = 'none'; -->
-			<!-- submitBtn.style.display = 'none'; -->
-			<!-- clearBtn.style.display = 'none'; -->
 		});
 
 		clearBtn.addEventListener('click', () => {
@@ -141,6 +137,7 @@
 		});
 
 		resetBtn.addEventListener('click', () => {
+			outputText.replaceChildren();
 			outputArea.style.display = 'none';
 			inputArea.style.display = 'block';
 		})
