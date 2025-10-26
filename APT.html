@@ -92,8 +92,7 @@
 	
 	let matchedCategory = null;
 	      for (const [category, { words: setWords }] of sets.entries()) {
-		console.log(word);
-		if (setWords.has(word.toLowerCase()) {
+		if (setWords.has(word.toLowerCase())) {
 			matchedCategory = category;
 			break;
 		}
