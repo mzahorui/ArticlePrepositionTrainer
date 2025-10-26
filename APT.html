@@ -53,24 +53,19 @@
 			cursor: pointer;
 		}
 
-		#outputText button {
+		.word-visible {
+			color: black;
 			background: none;
 			border: none;
 			font: inherit;
-			color: inherit;
 			<!-- cursor: pointer; -->
-			padding: 0 2px; /* adds slight spacing between words */
+			padding: 0 2px;
 			margin: 0;
 		}
 
-		.word-visible {
-			color: black;
-		}
-
-		/* Hidden word placeholder style */
 		.word-hidden {
 			color: #666;
-			background-color: #e0e0e0;
+			background: #dadada;
 			border-radius: 3px;
 			padding: 0 4px;
 			font-style: italic;
@@ -165,7 +160,6 @@
 				if (matchedCategory) {
 					btn.textContent = "???";
 					btn.classList.add("word-hidden");
-					<!-- Object.assign(btn.style, { background: "lightgrey", color: "black" }); -->
 					btn.addEventListener("click", function handleClick() {
 						btn.textContent = word;
 						btn.classList.remove("word-hidden");
@@ -174,7 +168,6 @@
 					});
 				} else {
 					btn.textContent = word;
-					<!-- Object.assign(btn.style, { background: "lightgrey", color: "black" }); -->
 					btn.classList.add("word-visible");
 				}
 
@@ -193,8 +186,6 @@
 
 		resetBtn.addEventListener('click', () => {
 			outputText.replaceChildren();
-			<!-- outputArea.style.display = 'none'; -->
-			<!-- inputArea.style.display = 'unset'; -->
 			outputArea.classList.add('hidden');
 			inputArea.classList.remove('hidden');
 		})
