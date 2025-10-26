@@ -57,6 +57,10 @@
 			font-size: 16px;
 			}
 		}
+		.hidden {
+			display: none !important;
+		}
+
 	</style>
 </head>
 <body>
@@ -68,7 +72,7 @@
 		</div>
 	</div>
 
-	<div id="outputArea" style="display: none;">
+	<div id="outputArea">
 		<div id="outputText"></div>
 		<div id="Control Pannel">
 			<button id="resetBtn">Reset</button>
@@ -83,6 +87,8 @@
 
 		const outputText = document.getElementById('outputText');
 		const resetBtn = document.getElementById('resetBtn');
+
+		outputArea.classList.add('hidden');
 
 		const sets = new Map([
 			["Definitive article", {
@@ -148,9 +154,9 @@
 			});
 
 			buttons.forEach(btn => outputText.appendChild(btn));
-			outputArea.style.display = 'block';
+			outputArea.classList.remove('hidden');
 
-			inputArea.style.display = 'none';
+			inputArea.classList.add('hidden');
 		});
 
 		clearBtn.addEventListener('click', () => {
@@ -159,8 +165,10 @@
 
 		resetBtn.addEventListener('click', () => {
 			outputText.replaceChildren();
-			outputArea.style.display = 'none';
-			inputArea.style.display = 'unset';
+			<!-- outputArea.style.display = 'none'; -->
+			<!-- inputArea.style.display = 'unset'; -->
+			outputArea.classList.add('hidden');
+			inputArea.classList.remove('hidden');
 		})
 	</script>
 </body>
