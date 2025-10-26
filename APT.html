@@ -77,11 +77,11 @@
 
     submitBtn.addEventListener('click', () => {
       const text = input.value.trim();
-	<!--      if (!text) { -->
-	<!-- event.preventDefault(); -->
-	<!-- alert("Please enter a text for processing!"); -->
-	<!-- return ; -->
-	<!--      } -->
+	     if (!text) {
+	event.preventDefault();
+	alert("Please enter a text for processing!");
+	return ;
+	     }
 
       const rawWords = text.split(/\s+/);
       const buttons = [];
@@ -92,10 +92,8 @@
 	
 	let matchedCategory = null;
 	      for (const [category, { words: setWords }] of sets.entries()) {
-		console.log("loop entry");
 		console.log(word);
-		if (setWords.has(word)) {
-			console.log("if entry")
+		if (setWords.has(word.toLowerCase()) {
 			matchedCategory = category;
 			break;
 		}
