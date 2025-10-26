@@ -1,129 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Minimal Text Display</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f8f8f8;
-      margin: 0;
-    }
-    textarea {
-      width: 600px;
-      height: 300px;
-      padding: 8px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      resize: none;
-    }
-    button {
-      margin: 8px;
-      padding: 5px 10px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    #output {
-      white-space: pre-line;
-      margin-top: 10px;
-      font-size: 14px;
-      text-align: left;
-    }
-  </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Minimal Text Display</title>
+	<style>
+		body {
+			font-family: sans-serif;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			background-color: #f8f8f8;
+			margin: 0;
+		}
+		textarea {
+			width: 600px;
+			height: 300px;
+			padding: 8px;
+			font-size: 14px;
+			border: 1px solid #ccc;
+			resize: none;
+		}
+		button {
+			margin: 8px;
+			padding: 5px 10px;
+			font-size: 14px;
+			cursor: pointer;
+		}
+		#output {
+			white-space: pre-line;
+			margin-top: 10px;
+			font-size: 14px;
+			text-align: left;
+		}
+	</style>
 </head>
 <body>
-  <textarea id="inputText" placeholder="Paste your text here..."></textarea>
-  <div>
-    <button id="submitBtn">Submit</button>
-    <button id="clearBtn">Clear</button>
-  </div>
-  <div id="output"></div>
+	<textarea id="inputText" placeholder="Paste your text here..."></textarea>
+	<div>
+		<button id="submitBtn">Submit</button>
+		<button id="clearBtn">Clear</button>
+	</div>
+	<div id="output"></div>
 
-  <script>
-    const input = document.getElementById('inputText');
-    const submitBtn = document.getElementById('submitBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const output = document.getElementById('output');
+	<script>
+		const input = document.getElementById('inputText');
+		const submitBtn = document.getElementById('submitBtn');
+		const clearBtn = document.getElementById('clearBtn');
+		const output = document.getElementById('output');
 
-    const sets = new Map([
-	["Definitive article", {
-	    words: new Set(["der", "die", "das", "dem", "den", "des"]),
-	}],
-	 ["Indefinitive article", {
-		words: new Set(["ein", "eine", "einen", "einem", "einer", "eines"]),
-	    }],
-	    ["Negative article", {
-		words: new Set(["kein", "keine", "keinen", "keiner"]),
-	    }],
-	    ["Akkusative preposition", {
-		words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]),
-	    }],
-	    ["Dative preposition", {
-		words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]),
-	    }],
-	    ["Genitive preposition", {
-		words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge"]),
-	    }],
-	    ["Akkusative/Dative preposition", {
-		words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]),
-	    }]
-	]);
+		const sets = new Map([
+			["Definitive article", {
+			words: new Set(["der", "die", "das", "dem", "den", "des"]),
 
-    submitBtn.addEventListener('click', () => {
-      const text = input.value.trim();
-	     if (!text) {
-	event.preventDefault();
-	alert("Please enter a text for processing!");
-	return ;
-	     }
+			}],
+			["Indefinitive article", {
+			words: new Set(["ein", "eine", "einen", "einem", "einer", "eines"]),
+			}],
+			["Negative article", {
+			words: new Set(["kein", "keine", "keinen", "keiner"]),
+			}],
+			["Akkusative preposition", {
+			words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]),
+			}],
+			["Dative preposition", {
+			words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]),
+			}],
+			["Genitive preposition", {
+			words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge"]),
+			}],
+			["Akkusative/Dative preposition", {
+			words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]),
+			}]
+		]);
 
-      const rawWords = text.split(/\s+/);
-      const buttons = [];
-      
-      rawWords.forEach(word => {
-	const btn = document.createElement("button");
-	btn.textContent = word;
-	
-	let matchedCategory = null;
-	      for (const [category, { words: setWords }] of sets.entries()) {
-		if (setWords.has(word.toLowerCase())) {
-			matchedCategory = category;
-			break;
-		}
-	      }
-	
-	if (matchedCategory) {
-		btn.textContent = "???";
-		Object.assign(btn.style, { background: "lightgrey", color: "black" });
-		btn.addEventListener("click", function handleClick() {
-			btn.textContent = word;
-			btn.removeEventListener("click", handleClick);
-		});
-	} else {
-		btn.textContent = word;
-		Object.assign(btn.style, { background: "lightgrey", color: "black" });
-	}
-	
-	buttons.push(btn);
-      });
+		submitBtn.addEventListener('click', () => {
+			const text = input.value.trim();
+			if (!text) {
+				event.preventDefault();
+				alert("Please enter a text for processing!");
+				return ;
+			}
 
-	const container = document.getElementById("output");
-	buttons.forEach(btn => container.appendChild(btn));
+			const rawWords = text.split(/\s+/);
+			const buttons = [];
 
-        input.style.display = 'none';
-        submitBtn.style.display = 'none';
-        clearBtn.style.display = 'none';
-    });
+			rawWords.forEach(word => {
+				const btn = document.createElement("button");
+				btn.textContent = word;
 
-    clearBtn.addEventListener('click', () => {
-      input.value = '';
-    });
-  </script>
+				let matchedCategory = null;
+				for (const [category, { words: setWords }] of sets.entries()) {
+					if (setWords.has(word.toLowerCase())) {
+						matchedCategory = category;
+						break;
+					}
+				}
+
+				if (matchedCategory) {
+					btn.textContent = "???";
+					Object.assign(btn.style, { background: "lightgrey", color: "black" });
+					btn.addEventListener("click", function handleClick() {
+						btn.textContent = word;
+						btn.removeEventListener("click", handleClick);
+					});
+				} else {
+					btn.textContent = word;
+					Object.assign(btn.style, { background: "lightgrey", color: "black" });
+				}
+
+				buttons.push(btn);
+			});
+
+			const container = document.getElementById("output");
+			buttons.forEach(btn => container.appendChild(btn));
+
+			input.style.display = 'none';
+			submitBtn.style.display = 'none';
+			clearBtn.style.display = 'none';
+			});
+
+			clearBtn.addEventListener('click', () => {
+			input.value = '';
+			});
+	</script>
 </body>
 </html>
