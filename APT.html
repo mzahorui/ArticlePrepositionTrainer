@@ -23,8 +23,8 @@
 			overflow: auto;
 		}
 		#inputArea {
-  margin-top: 1em;
-}
+			margin-top: 1em;
+		}
 		textarea {
 			flex: 1;
 			width: 100%;
@@ -52,6 +52,30 @@
 			font-size: 14px;
 			cursor: pointer;
 		}
+
+		#outputText button {
+			background: none;
+			border: none;
+			font: inherit;
+			color: inherit;
+			<!-- cursor: pointer; -->
+			padding: 0 2px; /* adds slight spacing between words */
+			margin: 0;
+		}
+
+		.word-visible {
+			color: black;
+		}
+
+		/* Hidden word placeholder style */
+		.word-hidden {
+			color: #666;
+			background-color: #e0e0e0;
+			border-radius: 3px;
+			padding: 0 4px;
+			font-style: italic;
+		}
+
 		@media (max-width: 600px) {
 			textarea, #outputText {
 			font-size: 16px;
@@ -140,14 +164,18 @@
 
 				if (matchedCategory) {
 					btn.textContent = "???";
-					Object.assign(btn.style, { background: "lightgrey", color: "black" });
+					btn.classList.add("word-hidden");
+					<!-- Object.assign(btn.style, { background: "lightgrey", color: "black" }); -->
 					btn.addEventListener("click", function handleClick() {
 						btn.textContent = word;
+						btn.classList.remove("word-hidden");
+						btn.classList.add("word-visible");
 						btn.removeEventListener("click", handleClick);
 					});
 				} else {
 					btn.textContent = word;
-					Object.assign(btn.style, { background: "lightgrey", color: "black" });
+					<!-- Object.assign(btn.style, { background: "lightgrey", color: "black" }); -->
+					btn.classList.add("word-visible");
 				}
 
 				buttons.push(btn);
