@@ -169,7 +169,7 @@
 
 				let matchedCategory = null;
 				let categoryClass = null;
-				for (const [category, { words: setWords }] of sets.entries()) {
+				for (const [category, { words: setWords, className }] of sets.entries()) {
 					if (setWords.has(word.toLowerCase())) {
 						matchedCategory = category;
 						categoryClass = className;
