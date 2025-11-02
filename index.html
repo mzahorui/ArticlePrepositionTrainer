@@ -164,6 +164,21 @@
 			}]
 		]);
 
+		inputText.addEventListener('input', () => {
+			localStorage.setItem('input', inputText.value);
+		})
+
+		window.addEventListener('load', () => {
+			const saved_input = localStorage.getItem('input');
+			if (saved_input) {
+				inputText.value = saved_input;
+			}
+			<!-- const saved_output = localStorage.getItem('output'); -->
+			<!-- if (saved_output) { -->
+			<!-- 	inputText.value = saved_output; -->
+			<!-- } -->
+		});
+
 		submitBtn.addEventListener('click', () => {
 			const text = inputText.value.trim();
 			if (!text) {
@@ -214,6 +229,7 @@
 				outputText.appendChild(sentenceDiv);
 			});
 
+			localStorage.setItem("output", outputText.html);
 			outputArea.classList.remove('hidden');
 			inputArea.classList.add('hidden');
 		});
