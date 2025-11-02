@@ -55,6 +55,16 @@
 			cursor: pointer;
 		}
 
+		.sentence {
+			display: block;
+			border: 1px solid #ccc;
+			background-color: #f5f5f5;
+			margin-bottom: 1em;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			padding: 1em; /* Add padding so content doesn't touch edges */
+			border-radius: 4px; /* Optional: soften corners */
+		}
+
 		.word-visible {
 			color: black;
 			background: none;
@@ -74,11 +84,11 @@
 		}
 
 		.word-hidden.article {
-			background: green;
+			background: #F2F2F2;
 		}
 
 		.word-hidden.preposition {
-			background: blue;
+			background: #f9f5d7;
 		}
 
 		@media (max-width: 600px) {
@@ -160,43 +170,47 @@
 				return ;
 			}
 
-			const rawWords = text.split(/\s+/);
-			const buttons = [];
+			const sentenceSeg = new Intl.Segmenter('de', { granularity: 'sentence' });
+			const sentences = Array.from(sentenceSeg.segment(text), s => s.segment);
 
-			rawWords.forEach(word => {
-				const btn = document.createElement("button");
-				btn.textContent = word;
+			sentences.forEach(sentence => {
+				const sentenceDiv = document.createElement("div");
+				sentenceDiv.classList.add("sentence");
+				const rawWords = sentence.split(/\s+/);
 
-				let matchedCategory = null;
-				let categoryClass = null;
-				for (const [category, { words: setWords, className }] of sets.entries()) {
-					if (setWords.has(word.toLowerCase())) {
-						matchedCategory = category;
-						categoryClass = className;
-						break;
-					}
-				}
-
-				if (matchedCategory) {
-					btn.textContent = "???";
-					btn.classList.add("word-hidden", categoryClass);
-					btn.addEventListener("click", function handleClick() {
-						btn.textContent = word;
-						btn.classList.remove("word-hidden");
-						btn.classList.add("word-visible");
-						btn.removeEventListener("click", handleClick);
-					});
-				} else {
+				rawWords.forEach(word => {
+					const btn = document.createElement("button");
 					btn.textContent = word;
-					btn.classList.add("word-visible");
-				}
 
-				buttons.push(btn);
+					let matchedCategory = null;
+					let categoryClass = null;
+					for (const [category, { words: setWords, className }] of sets.entries()) {
+						if (setWords.has(word.toLowerCase().replace(/^[^\w]+|[^\w]+$/g, ''))) {
+							matchedCategory = category;
+							categoryClass = className;
+							break;
+						}
+					}
+
+					if (matchedCategory) {
+						btn.textContent = categoryClass.slice(0, 3);
+						btn.classList.add("word-hidden", categoryClass);
+						btn.addEventListener("click", function handleClick() {
+							btn.textContent = word;
+							btn.classList.remove("word-hidden");
+							btn.classList.add("word-visible");
+							btn.removeEventListener("click", handleClick);
+						});
+					} else {
+						btn.textContent = word;
+						btn.classList.add("word-visible");
+					}
+					sentenceDiv.appendChild(btn);
+				});
+				outputText.appendChild(sentenceDiv);
 			});
 
-			buttons.forEach(btn => outputText.appendChild(btn));
 			outputArea.classList.remove('hidden');
-
 			inputArea.classList.add('hidden');
 		});
 
