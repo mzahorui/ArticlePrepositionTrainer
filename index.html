@@ -220,6 +220,17 @@
 					} else {
 						btn.textContent = word;
 						btn.classList.add("word-visible");
+						<!-- btn.addEventListener("click", async function translateText() { -->
+						<!-- 	if ('Translator' in self) { -->
+						<!-- 		const translator = await Translator.create({ -->
+						<!-- 			sourceLanguage: sourceLang, -->
+						<!-- 			targetLanguage: targetLang -->
+						<!-- 		}); -->
+						<!-- 		const translation = await translator.translate(btn.textContent); -->
+						<!-- 		alert(translation); -->
+						<!-- 	} -->
+						<!-- }); -->
+
 					}
 					sentenceDiv.appendChild(btn);
 				});
