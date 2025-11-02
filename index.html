@@ -34,6 +34,7 @@
 			box-sizing: border-box;
 			resize: none;
 		}
+
 		#outputText {
 			flex: 1;
 			height: 90vh;
@@ -46,6 +47,7 @@
 			box-sizing: border-box;
 			margin-top: 8px;
 		}
+
 		button {
 			margin: 6px 4px;
 			padding: 6px 10px;
@@ -71,11 +73,20 @@
 			font-style: italic;
 		}
 
+		.word-hidden.article {
+			background: green;
+		}
+
+		.word-hidden.preposition {
+			background: blue;
+		}
+
 		@media (max-width: 600px) {
 			textarea, #outputText {
-			font-size: 16px;
+				font-size: 16px;
 			}
 		}
+
 		.hidden {
 			display: none !important;
 		}
@@ -99,11 +110,12 @@
 	</div>
 
 	<script>
-		const inputText = document.getElementById('inputText');
 		const inputArea = document.getElementById('inputArea');
+		const inputText = document.getElementById('inputText');
 		const submitBtn = document.getElementById('submitBtn');
 		const clearBtn = document.getElementById('clearBtn');
 
+		const outputArea = document.getElementById('outputArea');
 		const outputText = document.getElementById('outputText');
 		const resetBtn = document.getElementById('resetBtn');
 
@@ -111,26 +123,32 @@
 
 		const sets = new Map([
 			["Definitive article", {
-			words: new Set(["der", "die", "das", "dem", "den", "des"]),
-
+				words: new Set(["der", "die", "das", "dem", "den", "des"]),
+				className: "article"
 			}],
 			["Indefinitive article", {
-			words: new Set(["ein", "eine", "einen", "einem", "einer", "eines"]),
+				words: new Set(["ein", "eine", "einen", "einem", "einer", "eines"]),
+				className: "article"
 			}],
 			["Negative article", {
-			words: new Set(["kein", "keine", "keinen", "keiner"]),
+				words: new Set(["kein", "keine", "keinen", "keiner"]),
+				className: "article"
 			}],
 			["Akkusative preposition", {
-			words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]),
+				words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]),
+				className: "preposition"
 			}],
 			["Dative preposition", {
-			words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]),
+				words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]),
+				className: "preposition"
 			}],
 			["Genitive preposition", {
-			words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge"]),
+				words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge"]),
+				className: "preposition"
 			}],
 			["Akkusative/Dative preposition", {
-			words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]),
+				words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]),
+				className: "preposition"
 			}]
 		]);
 
@@ -150,16 +168,18 @@
 				btn.textContent = word;
 
 				let matchedCategory = null;
+				let categoryClass = null;
 				for (const [category, { words: setWords }] of sets.entries()) {
 					if (setWords.has(word.toLowerCase())) {
 						matchedCategory = category;
+						categoryClass = className;
 						break;
 					}
 				}
 
 				if (matchedCategory) {
 					btn.textContent = "???";
-					btn.classList.add("word-hidden");
+					btn.classList.add("word-hidden", categoryClass);
 					btn.addEventListener("click", function handleClick() {
 						btn.textContent = word;
 						btn.classList.remove("word-hidden");
