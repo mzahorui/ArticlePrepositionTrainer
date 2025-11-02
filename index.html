@@ -122,6 +122,7 @@
 	</div>
 
 	<script>
+		const body = document.getElementById('body');
 		const inputArea = document.getElementById('inputArea');
 		const inputText = document.getElementById('inputText');
 		const submitBtn = document.getElementById('submitBtn');
@@ -173,10 +174,6 @@
 			if (saved_input) {
 				inputText.value = saved_input;
 			}
-			<!-- const saved_output = localStorage.getItem('output'); -->
-			<!-- if (saved_output) { -->
-			<!-- 	inputText.value = saved_output; -->
-			<!-- } -->
 		});
 
 		submitBtn.addEventListener('click', () => {
@@ -229,7 +226,7 @@
 				outputText.appendChild(sentenceDiv);
 			});
 
-			localStorage.setItem("output", outputText.html);
+			localStorage.setItem("output", outputText.innerHTML);
 			outputArea.classList.remove('hidden');
 			inputArea.classList.add('hidden');
 		});
