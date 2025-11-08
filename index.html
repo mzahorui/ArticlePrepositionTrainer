@@ -134,6 +134,13 @@
 
 		outputArea.classList.add('hidden');
 
+		async function translateWithMyMemory(text, sourceLang, targetLang) {
+			const url = `https://mymemory.translated.net/api/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
+			const response = await fetch(url);
+			const data = await response.json();
+			return data.responseData.translatedText;
+		}
+
 		const sets = new Map([
 			["Definitive article", {
 				words: new Set(["der", "die", "das", "dem", "den", "des"]),
@@ -220,18 +227,24 @@
 					} else {
 						btn.textContent = word;
 						btn.classList.add("word-visible");
-						btn.addEventListener("click", async function translateText() {
-							if ('Translator' in self) {
-								console.log("in translator");
-								const translator = await Translator.create({
-									sourceLanguage: "de",
-									targetLanguage: "en"
-								});
-								const translation = await translator.translate(btn.textContent);
-								console.log(translation);
-								alert(translation);
-							}
+						btn.addEventListener("click", async () => {
+							const translation = await translateWithMyMemory(btn.textContent, "de", "en");
+							console.log(translation);
+							alert(translation);
 						});
+
+						<!-- btn.addEventListener("click", async function translateText() { -->
+						<!-- 	if ('Translator' in self) { -->
+						<!-- 		console.log("in translator"); -->
+						<!-- 		const translator = await Translator.create({ -->
+						<!-- 			sourceLanguage: "de", -->
+						<!-- 			targetLanguage: "en" -->
+						<!-- 		}); -->
+						<!-- 		const translation = await translator.translate(btn.textContent); -->
+						<!-- 		console.log(translation); -->
+						<!-- 		alert(translation); -->
+						<!-- 	} -->
+						<!-- }); -->
 
 					}
 					sentenceDiv.appendChild(btn);
