@@ -30,22 +30,22 @@ const sets = new Map([
 		words: new Set(["kein", "keine", "keinen", "keiner"]),
 		className: "article"
 	}],
-	<!-- ["Akkusative preposition", { -->
-	<!-- 	words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]), -->
-	<!-- 	className: "preposition" -->
-	<!-- }], -->
-	<!-- ["Dative preposition", { -->
-	<!-- 	words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]), -->
-	<!-- 	className: "preposition" -->
-	<!-- }], -->
-	<!-- ["Genitive preposition", { -->
-	<!-- 	words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge"]), -->
-	<!-- 	className: "preposition" -->
-	<!-- }], -->
-	<!-- ["Akkusative/Dative preposition", { -->
-	<!-- 	words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]), -->
-	<!-- 	className: "preposition" -->
-	<!-- }] -->
+	["Akkusative preposition", {
+		words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]),
+		className: "preposition"
+	}],
+	["Dative preposition", {
+		words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]),
+		className: "preposition"
+	}],
+	["Genitive preposition", {
+		words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge"]),
+		className: "preposition"
+	}],
+	["Akkusative/Dative preposition", {
+		words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]),
+		className: "preposition"
+	}]
 ]);
 
 inputText.addEventListener('input', () => {
