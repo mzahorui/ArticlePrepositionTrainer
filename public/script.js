@@ -11,6 +11,7 @@ async function fetchNews() {
         }
         
         const data = await response.json();
+		console.log(data);
         
         // Display the news headlines
         displayNews(data.news);
@@ -25,27 +26,21 @@ async function fetchNews() {
 function displayNews(newsArray) {
     const container = document.getElementById('news-container');
     container.innerHTML = '';
-    
+
     newsArray.forEach(article => {
         const articleDiv = document.createElement('div');
         articleDiv.className = 'news-item';
-        
-        if (article.topline) {
-            const topline = document.createElement('p');
-            topline.className = 'topline';
-            topline.textContent = article.topline;
-            articleDiv.appendChild(topline);
-        }
         
         const headline = document.createElement('h2');
         headline.textContent = article.title;
         articleDiv.appendChild(headline);
         
-        const link = document.createElement('a');
-        link.href = article.shareURL;
-        link.textContent = 'Read more';
-        link.target = '_blank';
-        articleDiv.appendChild(link);
+        if (article.firstSentence) {
+            const firstSentence = document.createElement('p');
+            firstSentence.className = 'firstSentence';
+            firstSentence.textContent = article.firstSentence;
+            articleDiv.appendChild(firstSentence);
+        }
         
         container.appendChild(articleDiv);
     });
