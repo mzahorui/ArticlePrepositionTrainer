@@ -124,3 +124,17 @@ h1 {
         margin-bottom: 16px;
     }
 }
+
+/* Removing link style */
+.article-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.article-link:hover .news-item {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+}
+
