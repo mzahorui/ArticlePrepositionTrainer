@@ -4,6 +4,7 @@ const articleId = parseInt(urlParams.get('id'));
 
 // Retrieve all articles from localStorage
 const articles = JSON.parse(localStorage.getItem('newsArticles'));
+console.log(articles);
 
 if (articles && articles[articleId]) {
     const article = articles[articleId];
@@ -13,9 +14,12 @@ if (articles && articles[articleId]) {
     // Build content from all sentences
     const contentDiv = document.getElementById('article-content');
     article.content.forEach(item => {
+		if (item.type !== 'text' || !item.value)
+			return;
         const paragraph = document.createElement('p');
-        paragraph.textContent = item.value;
-        contentDiv.appendChild(paragraph);
+		const doc = new DOMParser().parseFromString(item.value, 'text/html');
+        paragraph.textContent = doc.body.textContent || '';
+		contentDiv.appendChild(paragraph);
     });
 } else {
     document.getElementById('article-detail').innerHTML = 

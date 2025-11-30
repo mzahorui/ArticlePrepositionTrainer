@@ -32,10 +32,6 @@ function displayNews(newsArray) {
 		articleLink.href = `/article.html?id=${index}`;
 		articleLink.className = 'article-link';
 
-		articleLink.addEventListener('click', (e) => {
-			localStorage.setItem('currentArticle', JSON.stringify(article));
-		});
-
         const articleDiv = document.createElement('div');
         articleDiv.className = 'news-item';
         

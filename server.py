@@ -16,7 +16,6 @@ class CustomHandler(SimpleHTTPRequestHandler):
     def handle_news_api(self):
         try:
             response = requests.get('https://www.tagesschau.de/api2u/homepage/')
-            print(response.json()) 
             if response.status_code == 200:
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
