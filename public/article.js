@@ -17,7 +17,7 @@ if (articles && articles[articleId]) {
 		if (item.type !== 'text' || !item.value)
 			return;
 		const doc = new DOMParser().parseFromString(item.value, 'text/html');
-        const paragraphText = doc.body.textContent || '';
+        const text = doc.body.textContent || '';
 		contentDiv.appendChild(paragraph);
     });
 } else {
@@ -31,35 +31,85 @@ splitToSentences = (text, lang) => {
 	return sentences;
 }
 
+sentenceToButtonDiv = (sentence) => {
+	const sentenceDiv = document.createElement("div");
+	sentenceDiv.classList.add("sentence");
+	const rawWords = sentence.split(/\s+/);
+
+	rawWords.forEach(word => {
+		if (!word.trim()) return;
+		const btn = document.createElement("button");
+		btn.textContent = word;
+		sentenceDiv.appendChild(btn);
+	});
+	return sentenceDiv;
+}
+
+addWordCategories = (sentenceDiv) => {
+	const buttons = sentenceDiv.querySelectorAll("button");
+	buttons.forEach(btn => {
+		let matchedCategory = null;
+		let categoryClass = null;
+		for (const [category, { words: setWords, className }] of sets.entries()) {
+			if (setWords.has(btn.textContent.toLowerCase().replace(/^[^\w]+|[^\w]+$/g, ''))) {
+				matchedCategory = category;
+				categoryClass = className;
+				break;
+			}
+		}
+	});
+}
+
 const sets = new Map([
-	["Definitive article", {
-		words: new Set(["der", "die", "das", "dem", "den", "des"]),
-		className: "article"
-	}],
-	["Indefinitive article", {
-		words: new Set(["ein", "eine", "einen", "einem", "einer", "eines"]),
-		className: "article"
-	}],
-	["Negative article", {
-		words: new Set(["kein", "keine", "keinen", "keiner"]),
-		className: "article"
-	}],
-	["Akkusative preposition", {
-		words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]),
-		className: "preposition"
-	}],
-	["Dative preposition", {
-		words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]),
-		className: "preposition"
-	}],
-	["Genitive preposition", {
-		words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge"]),
-		className: "preposition"
-	}],
-	["Akkusative/Dative preposition", {
-		words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]),
-		className: "preposition"
-	}]
+    // Artikel
+    ["Bestimmter Artikel", {
+        words: new Set(["der", "die", "das", "dem", "den", "des"]),
+        classes: ["artikel", "bestimmter-artikel"]
+    }],
+    ["Unbestimmter Artikel", {
+        words: new Set(["ein", "eine", "einen", "einem", "einer", "eines"]),
+        classes: ["artikel", "unbestimmter-artikel"]
+    }],
+    ["Negativartikel", {
+        words: new Set(["kein", "keine", "keinen", "keiner", "keines", "keinem"]),
+        classes: ["artikel", "negativartikel"]
+    }],
+    
+    // Präpositionen
+    ["Präposition mit Akkusativ", {
+        words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]),
+        classes: ["präposition", "akkusativ-präposition"]
+    }],
+    ["Präposition mit Dativ", {
+        words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]),
+        classes: ["präposition", "dativ-präposition"]
+    }],
+    ["Präposition mit Genitiv", {
+        words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge", "dank", "bezüglich", "anlässlich", "mithilfe", "mittels", "anhand", "laut", "zufolge", "hinsichtlich"]),
+        classes: ["präposition", "genitiv-präposition"]
+    }],
+    ["Wechselpräposition", {
+        words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]),
+        classes: ["präposition", "wechselpräposition"]
+    }],
+    
+    // Konjunktionen
+    ["Subjunktion", {
+        words: new Set(["dass", "weil", "da", "obwohl", "wenn", "als", "bevor", "nachdem", "während", "bis", "seit", "sobald", "solange", "falls", "sofern", "ob", "damit", "sodass", "indem", "ohne dass", "anstatt dass"]),
+        classes: ["konjunktion", "subjunktion"]
+    }],
+    ["Konjunktion", {
+        words: new Set(["und", "oder", "aber", "denn", "sondern", "doch"]),
+        classes: ["konjunktion", "nebenordnende-konjunktion"]
+    }],
+    ["Konjunktionaladverb", {
+        words: new Set(["deswegen", "deshalb", "daher", "darum", "folglich", "trotzdem", "dennoch", "allerdings", "außerdem", "zudem", "sonst", "andernfalls", "dann", "danach", "vorher", "zuerst", "schließlich"]),
+        classes: ["konjunktion", "konjunktionaladverb"]
+    }],
+    ["Mehrteilige Konjunktion", {
+        words: new Set(["entweder", "oder", "weder", "noch", "sowohl", "als", "nicht", "nur", "sondern", "auch", "zwar", "je", "desto"]),
+        classes: ["konjunktion", "mehrteilige-konjunktion"]
+    }]
 ]);
 
 async function translateWithMyMemory(text, sourceLang, targetLang) {
