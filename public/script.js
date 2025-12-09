@@ -12,7 +12,7 @@ async function fetchNews() {
         
         const data = await response.json();
 
-		localStorage.setItem('newsArticles', JSON.stringify(data.news));
+		localStorage.setItem('articlesTagesschau', JSON.stringify(data.news));
         
         displayNews(data.news);
         

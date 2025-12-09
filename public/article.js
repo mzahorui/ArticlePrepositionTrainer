@@ -1,37 +1,96 @@
-// Get the article ID from URL
-const urlParams = new URLSearchParams(window.location.search);
-const articleId = parseInt(urlParams.get('id'));
+		// document.getElementById('article-title').textContent = article.title;
+		// document.getElementById('article-detail').innerHTML = 
+		// 	'<p>Article not found. <a href="/">Return to homepage</a></p>';
 
-// Retrieve all articles from localStorage
-const articles = JSON.parse(localStorage.getItem('newsArticles'));
-console.log(articles);
+'use strict'
 
-if (articles && articles[articleId]) {
-    const article = articles[articleId];
-    
-    document.getElementById('article-title').textContent = article.title;
-    
-    // Build content from all sentences
-    const contentDiv = document.getElementById('article-content');
-    article.content.forEach(item => {
-		if (item.type !== 'text' || !item.value)
-			return;
-		const doc = new DOMParser().parseFromString(item.value, 'text/html');
-        const text = doc.body.textContent || '';
-		contentDiv.appendChild(paragraph);
-    });
-} else {
-    document.getElementById('article-detail').innerHTML = 
-        '<p>Article not found. <a href="/">Return to homepage</a></p>';
+function main() {
+	document.getElementById('article-title').textContent = getArticleTitle();
+	const text = getTextTagesschau();
+	if (!text) {
+		document.getElementById('article-detail').innerHTML = 
+			'<p>Article not found. <a href="/">Return to homepage</a></p>';
+		return;
+	}
+
+	const articleDiv = getElementById('article-content');
+	const sentences = splitToSentences(text, 'de');
 }
 
-splitToSentences = (text, lang) => {
+/**
+ * Retrieves the current article based on the URL ID.
+ * @returns {Object|null} The article object, or null if not found/invalid.
+ */
+function getCurrentArticle() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const idParam = urlParams.get('id');
+
+    if (!idParam || isNaN(idParam)) {
+        console.warn("getCurrentArticle: Invalid or missing 'id' in URL.");
+        return null;
+    }
+
+    try {
+        const storedData = localStorage.getItem('articlesTagesschau');
+        if (!storedData) return null;
+        
+        const articles = JSON.parse(storedData);
+        const articleId = parseInt(idParam, 10);
+        const article = articles[articleId];
+
+        if (!article) {
+            console.warn(`getCurrentArticle: Article ID ${articleId} not found.`);
+            return null;
+        }
+
+        return article;
+
+    } catch (e) {
+        console.error("getCurrentArticle: Data retrieval failed.", e);
+        return null;
+    }
+}
+
+// Retrieves article text from Tagesschau object.
+function getTextTagesschau() {
+	const article = getCurrentArticle();
+	if (!article) return null;
+
+	const parser = new DOMParser();
+	let fullArticleText = '';
+	article.content.forEach(item => {
+		if (item.type !== 'text' || !item.value)
+			return;
+		const doc = parser.parseFromString(item.value, 'text/html');
+		fullArticleText = (doc.body.textContent || '') + ' ';
+	});
+
+	return fullArticleText.trim();
+}
+
+function getArticleTitle() {
+    const article = getCurrentArticle();
+    return article ? article.title : null;
+}
+
+/**
+ * Segments a text string into an array of sentences using Intl.Segmenter.
+ * @param {string} text - The full text to split.
+ * @param {string} lang - The language code (e.g., 'de', 'en').
+ * @returns {string[]} An array of sentence strings.
+ */
+function splitToSentences(text, lang) {
 	const sentenceSeg = new Intl.Segmenter(lang, { granularity: 'sentence' });
 	const sentences = Array.from(sentenceSeg.segment(text), s => s.segment);
 	return sentences;
 }
 
-sentenceToButtonDiv = (sentence) => {
+/**
+ * Creates a DIV containing buttons for each word in the sentence.
+ * @param {string} sentence - The sentence string to process.
+ * @returns {HTMLElement} A div element containing the word buttons.
+ */
+function sentenceToButtonDiv(sentence) {
 	const sentenceDiv = document.createElement("div");
 	sentenceDiv.classList.add("sentence");
 	const rawWords = sentence.split(/\s+/);
@@ -45,7 +104,12 @@ sentenceToButtonDiv = (sentence) => {
 	return sentenceDiv;
 }
 
-addWordCategories = (sentenceDiv) => {
+/**
+ * Iterates through buttons in a sentenceDiv and applies category classes.
+ * Assumes 'sets' is globally available.
+ * @param {HTMLElement} sentenceDiv - The div containing word buttons.
+ */
+function addWordCategories(sentenceDiv) {
 	const buttons = sentenceDiv.querySelectorAll("button");
 	buttons.forEach(btn => {
 		let matchedCategory = null;
@@ -58,6 +122,17 @@ addWordCategories = (sentenceDiv) => {
 			}
 		}
 	});
+}
+
+/**
+ * Translates text using the MyMemory API.
+ * @returns {Promise<string|null>} The translated text or null on failure.
+ */
+async function translateWithMyMemory(text, sourceLang, targetLang) {
+	const url = `https://mymemory.translated.net/api/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
+	const response = await fetch(url);
+	const data = await response.json();
+	return data.responseData.translatedText;
 }
 
 const sets = new Map([
@@ -112,13 +187,7 @@ const sets = new Map([
     }]
 ]);
 
-async function translateWithMyMemory(text, sourceLang, targetLang) {
-	const url = `https://mymemory.translated.net/api/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
-	const response = await fetch(url);
-	const data = await response.json();
-	return data.responseData.translatedText;
-}
-
+main();
 
 // const body = document.getElementById('body');
 // const inputArea = document.getElementById('inputArea');
