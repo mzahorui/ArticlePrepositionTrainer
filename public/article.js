@@ -14,8 +14,8 @@ function main() {
 	}
 
 	const sentences = splitToSentences(text, 'de');
-	const articleDiv = getElementById('article-content');
-	articleDiv.add(sentencesToArticleDiv(sentences));
+	const articleDiv = document.getElementById('article-content');
+	articleDiv.append(sentencesToArticleDiv(sentences));
 }
 
 function sentencesToArticleDiv(sentences) {
@@ -91,7 +91,7 @@ function getTextTagesschau() {
 		if (item.type !== 'text' || !item.value)
 			return;
 		const doc = parser.parseFromString(item.value, 'text/html');
-		fullArticleText = (doc.body.textContent || '') + ' ';
+		fullArticleText += (doc.body.textContent || '') + ' ';
 	});
 
 	return fullArticleText.trim();
