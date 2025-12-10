@@ -13,8 +13,37 @@ function main() {
 		return;
 	}
 
-	const articleDiv = getElementById('article-content');
 	const sentences = splitToSentences(text, 'de');
+	const articleDiv = getElementById('article-content');
+	articleDiv.add(sentencesToArticleDiv(sentences));
+}
+
+function sentencesToArticleDiv(sentences) {
+	const articleDiv = document.createElement("div");
+	sentences.forEach(sentence => { 
+		const sentenceDiv = sentenceToButtonDiv(sentence);
+		articleDiv.appendChild(sentenceDiv);
+	});
+	return articleDiv;
+}
+
+/**
+ * Creates a DIV containing buttons for each word in the sentence.
+ * @param {string} sentence - The sentence string to process.
+ * @returns {HTMLElement} A div element containing the word buttons.
+ */
+function sentenceToButtonDiv(sentence) {
+	const sentenceDiv = document.createElement("div");
+	sentenceDiv.classList.add("sentence");
+	const rawWords = sentence.split(/\s+/);
+
+	rawWords.forEach(word => {
+		if (!word.trim()) return;
+		const btn = document.createElement("button");
+		btn.textContent = word;
+		sentenceDiv.appendChild(btn);
+	});
+	return sentenceDiv;
 }
 
 /**
@@ -86,25 +115,6 @@ function splitToSentences(text, lang) {
 }
 
 /**
- * Creates a DIV containing buttons for each word in the sentence.
- * @param {string} sentence - The sentence string to process.
- * @returns {HTMLElement} A div element containing the word buttons.
- */
-function sentenceToButtonDiv(sentence) {
-	const sentenceDiv = document.createElement("div");
-	sentenceDiv.classList.add("sentence");
-	const rawWords = sentence.split(/\s+/);
-
-	rawWords.forEach(word => {
-		if (!word.trim()) return;
-		const btn = document.createElement("button");
-		btn.textContent = word;
-		sentenceDiv.appendChild(btn);
-	});
-	return sentenceDiv;
-}
-
-/**
  * Iterates through buttons in a sentenceDiv and applies category classes.
  * Assumes 'sets' is globally available.
  * @param {HTMLElement} sentenceDiv - The div containing word buttons.
@@ -121,6 +131,25 @@ function addWordCategories(sentenceDiv) {
 				break;
 			}
 		}
+// 			if (matchedCategory) {
+
+// 				btn.classList.add("word-hidden", categoryClass);
+// 				btn.addEventListener("click", function handleClick() {
+// 					btn.textContent = word;
+// 					btn.classList.remove("word-hidden");
+// 					btn.classList.add("word-visible");
+// 					btn.removeEventListener("click", handleClick);
+// 				});
+// 			} else if (word === ' ') {
+// 				return;
+// 			} else {
+// 				btn.textContent = word;
+// 				btn.classList.add("word-visible");
+// 				btn.addEventListener("click", async () => {
+// 					const translation = await translateWithMyMemory(btn.textContent, "de", "en");
+// 					console.log(translation);
+// 					alert(translation);
+// 				});
 	});
 }
 
