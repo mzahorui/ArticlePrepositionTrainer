@@ -1,7 +1,3 @@
-		// document.getElementById('article-title').textContent = article.title;
-		// document.getElementById('article-detail').innerHTML = 
-		// 	'<p>Article not found. <a href="/">Return to homepage</a></p>';
-
 'use strict'
 
 function main() {
@@ -16,6 +12,18 @@ function main() {
 	const sentences = splitToSentences(text, 'de');
 	const articleDiv = document.getElementById('article-content');
 	articleDiv.append(sentencesToArticleDiv(sentences));
+	articleDiv.addEventListener('click', handleClickInArticle);
+}
+
+async function handleClickInArticle(event) {
+	const button = event.target.closest('button');
+	if (!button && !this.contains(button)) {
+		console.error("Clicked button doesn't exist or doesn't belong to the class");
+		return;
+	}
+	const translation = await translateWithMyMemory(button.textContent, "de", "en");
+	console.log(translation);
+	alert(translation);
 }
 
 function sentencesToArticleDiv(sentences) {
@@ -119,39 +127,39 @@ function splitToSentences(text, lang) {
  * Assumes 'sets' is globally available.
  * @param {HTMLElement} sentenceDiv - The div containing word buttons.
  */
-function addWordCategories(sentenceDiv) {
-	const buttons = sentenceDiv.querySelectorAll("button");
-	buttons.forEach(btn => {
-		let matchedCategory = null;
-		let categoryClass = null;
-		for (const [category, { words: setWords, className }] of sets.entries()) {
-			if (setWords.has(btn.textContent.toLowerCase().replace(/^[^\w]+|[^\w]+$/g, ''))) {
-				matchedCategory = category;
-				categoryClass = className;
-				break;
-			}
-		}
-// 			if (matchedCategory) {
-
-// 				btn.classList.add("word-hidden", categoryClass);
-// 				btn.addEventListener("click", function handleClick() {
-// 					btn.textContent = word;
-// 					btn.classList.remove("word-hidden");
-// 					btn.classList.add("word-visible");
-// 					btn.removeEventListener("click", handleClick);
-// 				});
-// 			} else if (word === ' ') {
-// 				return;
-// 			} else {
-// 				btn.textContent = word;
-// 				btn.classList.add("word-visible");
-// 				btn.addEventListener("click", async () => {
-// 					const translation = await translateWithMyMemory(btn.textContent, "de", "en");
-// 					console.log(translation);
-// 					alert(translation);
-// 				});
-	});
-}
+// function setButtons(sentenceDiv) {
+// 	const buttons = sentenceDiv.querySelectorAll("button");
+// 	buttons.forEach(btn => {
+// 		let matchedCategory = null;
+// 		let categoryClass = null;
+// 		for (const [category, { words: setWords, className }] of sets.entries()) {
+// 			if (setWords.has(btn.textContent.toLowerCase().replace(/^[^\w]+|[^\w]+$/g, ''))) {
+// 				matchedCategory = category;
+// 				categoryClass = className;
+// 				break;
+// 			}
+// 		}
+// // // 			if (matchedCategory) {
+// //
+// // // 				btn.classList.add("word-hidden", categoryClass);
+// // // 				btn.addEventListener("click", function handleClick() {
+// // // 					btn.textContent = word;
+// // // 					btn.classList.remove("word-hidden");
+// // // 					btn.classList.add("word-visible");
+// // // 					btn.removeEventListener("click", handleClick);
+// // // 				});
+// // // 			} else if (word === ' ') {
+// // // 				return;
+// // // 			} else {
+// // // 				btn.textContent = word;
+// // // 				btn.classList.add("word-visible");
+// // // 				btn.addEventListener("click", async () => {
+// // // 					const translation = await translateWithMyMemory(btn.textContent, "de", "en");
+// // // 					console.log(translation);
+// // // 					alert(translation);
+// // // 				});
+// // 	});
+// }
 
 /**
  * Translates text using the MyMemory API.
@@ -168,197 +176,60 @@ const sets = new Map([
     // Artikel
     ["Bestimmter Artikel", {
         words: new Set(["der", "die", "das", "dem", "den", "des"]),
-        classes: ["artikel", "bestimmter-artikel"]
+        partOfSpeech: ["artikel", "bestimmter-artikel"]
     }],
+
     ["Unbestimmter Artikel", {
         words: new Set(["ein", "eine", "einen", "einem", "einer", "eines"]),
-        classes: ["artikel", "unbestimmter-artikel"]
+        partOfSpeech: ["artikel", "unbestimmter-artikel"]
     }],
+
     ["Negativartikel", {
         words: new Set(["kein", "keine", "keinen", "keiner", "keines", "keinem"]),
-        classes: ["artikel", "negativartikel"]
+        partOfSpeech: ["artikel", "negativartikel"]
     }],
     
     // Präpositionen
     ["Präposition mit Akkusativ", {
         words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]),
-        classes: ["präposition", "akkusativ-präposition"]
+        partOfSpeech: ["präposition", "akkusativ-präposition"]
     }],
+
     ["Präposition mit Dativ", {
         words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]),
-        classes: ["präposition", "dativ-präposition"]
+        partOfSpeech: ["präposition", "dativ-präposition"]
     }],
+
     ["Präposition mit Genitiv", {
         words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge", "dank", "bezüglich", "anlässlich", "mithilfe", "mittels", "anhand", "laut", "zufolge", "hinsichtlich"]),
-        classes: ["präposition", "genitiv-präposition"]
+        partOfSpeech: ["präposition", "genitiv-präposition"]
     }],
+
     ["Wechselpräposition", {
         words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]),
-        classes: ["präposition", "wechselpräposition"]
+        partOfSpeech: ["präposition", "wechselpräposition"]
     }],
     
     // Konjunktionen
     ["Subjunktion", {
         words: new Set(["dass", "weil", "da", "obwohl", "wenn", "als", "bevor", "nachdem", "während", "bis", "seit", "sobald", "solange", "falls", "sofern", "ob", "damit", "sodass", "indem", "ohne dass", "anstatt dass"]),
-        classes: ["konjunktion", "subjunktion"]
+        partOfSpeech: ["konjunktion", "subjunktion"]
     }],
+
     ["Konjunktion", {
         words: new Set(["und", "oder", "aber", "denn", "sondern", "doch"]),
-        classes: ["konjunktion", "nebenordnende-konjunktion"]
+        partOfSpeech: ["konjunktion", "nebenordnende-konjunktion"]
     }],
+
     ["Konjunktionaladverb", {
         words: new Set(["deswegen", "deshalb", "daher", "darum", "folglich", "trotzdem", "dennoch", "allerdings", "außerdem", "zudem", "sonst", "andernfalls", "dann", "danach", "vorher", "zuerst", "schließlich"]),
-        classes: ["konjunktion", "konjunktionaladverb"]
+        partOfSpeech: ["konjunktion", "konjunktionaladverb"]
     }],
+
     ["Mehrteilige Konjunktion", {
         words: new Set(["entweder", "oder", "weder", "noch", "sowohl", "als", "nicht", "nur", "sondern", "auch", "zwar", "je", "desto"]),
-        classes: ["konjunktion", "mehrteilige-konjunktion"]
+        partOfSpeech: ["konjunktion", "mehrteilige-konjunktion"]
     }]
 ]);
 
 main();
-
-// const body = document.getElementById('body');
-// const inputArea = document.getElementById('inputArea');
-// const inputText = document.getElementById('inputText');
-// const submitBtn = document.getElementById('submitBtn');
-// const clearBtn = document.getElementById('clearBtn');
-//
-// const outputArea = document.getElementById('outputArea');
-// const outputText = document.getElementById('outputText');
-// const resetBtn = document.getElementById('resetBtn');
-//
-// outputArea.classList.add('hidden');
-//
-// async function translateWithMyMemory(text, sourceLang, targetLang) {
-// 	const url = `https://mymemory.translated.net/api/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
-// 	const response = await fetch(url);
-// 	const data = await response.json();
-// 	return data.responseData.translatedText;
-// }
-//
-// const sets = new Map([
-// 	["Definitive article", {
-// 		words: new Set(["der", "die", "das", "dem", "den", "des"]),
-// 		className: "article"
-// 	}],
-// 	["Indefinitive article", {
-// 		words: new Set(["ein", "eine", "einen", "einem", "einer", "eines"]),
-// 		className: "article"
-// 	}],
-// 	["Negative article", {
-// 		words: new Set(["kein", "keine", "keinen", "keiner"]),
-// 		className: "article"
-// 	}],
-// 	["Akkusative preposition", {
-// 		words: new Set(["durch", "für", "gegen", "ohne", "um", "bis", "entlang"]),
-// 		className: "preposition"
-// 	}],
-// 	["Dative preposition", {
-// 		words: new Set(["aus", "bei", "mit", "nach", "seit", "von", "zu", "gegenüber", "außer"]),
-// 		className: "preposition"
-// 	}],
-// 	["Genitive preposition", {
-// 		words: new Set(["während", "wegen", "trotz", "statt", "anstatt", "außerhalb", "innerhalb", "oberhalb", "unterhalb", "diesseits", "jenseits", "unweit", "angesichts", "aufgrund", "infolge"]),
-// 		className: "preposition"
-// 	}],
-// 	["Akkusative/Dative preposition", {
-// 		words: new Set(["an", "auf", "hinter", "in", "neben", "über", "unter", "vor", "zwischen"]),
-// 		className: "preposition"
-// 	}]
-// ]);
-//
-// inputText.addEventListener('input', () => {
-// 	localStorage.setItem('input', inputText.value);
-// })
-//
-// window.addEventListener('load', () => {
-// 	const saved_input = localStorage.getItem('input');
-// 	if (saved_input) {
-// 		inputText.value = saved_input;
-// 	}
-// });
-//
-// submitBtn.addEventListener('click', () => {
-// 	const text = inputText.value.trim();
-// 	if (!text) {
-// 		event.preventDefault();
-// 		alert("Please enter a text for processing!");
-// 		return ;
-// 	}
-//
-// 	const sentenceSeg = new Intl.Segmenter('de', { granularity: 'sentence' });
-// 	const sentences = Array.from(sentenceSeg.segment(text), s => s.segment);
-//
-// 	sentences.forEach(sentence => {
-// 		const sentenceDiv = document.createElement("div");
-// 		sentenceDiv.classList.add("sentence");
-// 		const rawWords = sentence.split(/\s+/);
-//
-// 		rawWords.forEach(word => {
-// 			const btn = document.createElement("button");
-// 			btn.textContent = word;
-//
-// 			let matchedCategory = null;
-// 			let categoryClass = null;
-// 			for (const [category, { words: setWords, className }] of sets.entries()) {
-// 				if (setWords.has(word.toLowerCase().replace(/^[^\w]+|[^\w]+$/g, ''))) {
-// 					matchedCategory = category;
-// 					categoryClass = className;
-// 					break;
-// 				}
-// 			}
-//
-// 			if (matchedCategory) {
-// 				btn.textContent = categoryClass.slice(0, 3);
-// 				btn.classList.add("word-hidden", categoryClass);
-// 				btn.addEventListener("click", function handleClick() {
-// 					btn.textContent = word;
-// 					btn.classList.remove("word-hidden");
-// 					btn.classList.add("word-visible");
-// 					btn.removeEventListener("click", handleClick);
-// 				});
-// 			} else if (word === ' ') {
-// 				return;
-// 			} else {
-// 				btn.textContent = word;
-// 				btn.classList.add("word-visible");
-// 				btn.addEventListener("click", async () => {
-// 					const translation = await translateWithMyMemory(btn.textContent, "de", "en");
-// 					console.log(translation);
-// 					alert(translation);
-// 				});
-//
-// 				<!-- btn.addEventListener("click", async function translateText() { -->
-// 				<!-- 	if ('Translator' in self) { -->
-// 				<!-- 		console.log("in translator"); -->
-// 				<!-- 		const translator = await Translator.create({ -->
-// 				<!-- 			sourceLanguage: "de", -->
-// 				<!-- 			targetLanguage: "en" -->
-// 				<!-- 		}); -->
-// 				<!-- 		const translation = await translator.translate(btn.textContent); -->
-// 				<!-- 		console.log(translation); -->
-// 				<!-- 		alert(translation); -->
-// 				<!-- 	} -->
-// 				<!-- }); -->
-//
-// 			}
-// 			sentenceDiv.appendChild(btn);
-// 		});
-// 		outputText.appendChild(sentenceDiv);
-// 	});
-//
-// 	localStorage.setItem("output", outputText.innerHTML);
-// 	outputArea.classList.remove('hidden');
-// 	inputArea.classList.add('hidden');
-// });
-//
-// clearBtn.addEventListener('click', () => {
-// 	inputText.value = '';
-// });
-//
-// resetBtn.addEventListener('click', () => {
-// 	outputText.replaceChildren();
-// 	outputArea.classList.add('hidden');
-// 	inputArea.classList.remove('hidden');
-// })
