@@ -3,7 +3,7 @@ import json
 import requests
 from http.server import HTTPServer, SimpleHTTPRequestHandler 
 
-host = "localhost"
+host = "0.0.0.0"
 port = 8000
 
 class CustomHandler(SimpleHTTPRequestHandler):
